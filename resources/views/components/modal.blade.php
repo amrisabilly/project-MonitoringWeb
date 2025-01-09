@@ -1,4 +1,4 @@
-@props(['modalId', 'triggerId', 'triggerText', 'title', 'content', 'class', 'icon'])
+@props(['modalId', 'triggerId', 'triggerText', 'title', 'content', 'class', 'icon', 'actions'])
 
 <div>
     <style>
@@ -47,7 +47,8 @@
             <div style="display: flex; gap:1em;">
                 <button class="secondary-button" style="width:211px;height:29px; justify-content:center"
                     data-modal-id="modal-{{ $modalId }}"> Back </button>
-                <button class="primary-button" style="width:211px;height:29px; justify-content:center"> Verify </button>
+                <a href="{{ $actions }}"><button class="primary-button"
+                        style="width:211px;height:29px; justify-content:center"> Verify </button></a>
             </div>
         </div>
     </div>

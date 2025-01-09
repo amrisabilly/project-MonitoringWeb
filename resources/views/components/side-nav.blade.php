@@ -224,8 +224,8 @@
 
             <!-- Add Folder Button -->
             <x-modal modalId="addFolder" triggerId="addFolder" triggerText="Add folder" title="Modal Title"
-                content="This is the modal content." actionText="Confirm" class="add-folder-button"
-                icon="img/icons/plus.png" />
+                content="This is the modal content." class="add-folder-button" icon="img/icons/plus.png"
+                actions='#' />
         </div>
     </nav>
 </div>

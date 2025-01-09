@@ -36,9 +36,10 @@
 
 
     <a onclick="toggleSwitch('{{ $id }}')">
-        <div class="toggle {{ $isActive ? 'active' : '' }}" id="{{ $id }}">
+        <div class="toggle {{ $isActive ? 'active' : '' }}" id="{{ $id }}" onclick="staticToggle(this)">
             <div class="toggle-circle"></div>
         </div>
+
     </a>
 </div>
 
@@ -46,5 +47,15 @@
     function toggleSwitch(id) {
         var toggle = document.getElementById(id);
         toggle.classList.toggle('active');
+
+        // Dapatkan parent row dari toggle
+        var row = toggle.closest('.items-row');
+
+        // Tambahkan atau hapus kelas `inactive-row` berdasarkan status toggle
+        if (!toggle.classList.contains('active')) {
+            row.classList.add('inactive-row');
+        } else {
+            row.classList.remove('inactive-row');
+        }
     }
 </script>

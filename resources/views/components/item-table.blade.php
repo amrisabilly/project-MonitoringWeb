@@ -72,10 +72,14 @@
         table::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        .inactive-row {
+            color: rgba(0, 0, 0, 0.5)
+        }
     </style>
 
     {{-- Main Table --}}
-    <table class="main-table">
+    <table class="main-table" id="itemTable">
         {{-- Header --}}
         <thead>
             <tr>
@@ -140,7 +144,7 @@
                     <div>
 
                         <p style="max-width: 287px; word-wrap:break-word; ">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
+                            Aorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
                         </p>
                     </div>
                 </td>
@@ -172,7 +176,7 @@
                     <div>
 
                         <p style="max-width: 287px; word-wrap:break-word; ">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
+                            Torem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
                         </p>
                     </div>
                 </td>
@@ -204,7 +208,7 @@
                     <div>
 
                         <p style="max-width: 287px; word-wrap:break-word; ">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
+                            Corem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
                         </p>
                     </div>
                 </td>
@@ -236,7 +240,7 @@
                     <div>
 
                         <p style="max-width: 287px; word-wrap:break-word; ">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
+                            Borem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
                         </p>
                     </div>
                 </td>
@@ -270,7 +274,7 @@
                     <div>
 
                         <p style="max-width: 287px; word-wrap:break-word; ">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
+                            Dorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, necessitatibus.
                         </p>
                     </div>
                 </td>
@@ -299,4 +303,29 @@
         </tbody>
 
     </table>
+
+    <script>
+        function staticToggle(element) {
+            element.classList.toggle('active'); // Toggle status aktif
+
+            // Temukan parent row dari toggle
+            var row = element.closest('.items-row');
+
+            // Tambah atau hapus kelas inactive-row
+            if (!element.classList.contains('active')) {
+                row.classList.add('inactive-row');
+            } else {
+                row.classList.remove('inactive-row');
+            }
+        }
+
+        // Inisialisasi: Set opacity pada semua row dengan toggle tidak aktif
+        document.querySelectorAll('.toggle').forEach(function(toggle) {
+            var row = toggle.closest('.items-row');
+            if (!toggle.classList.contains('active')) {
+                row.classList.add('inactive-row');
+            }
+        });
+    </script>
+
 </div>
