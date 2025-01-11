@@ -223,9 +223,10 @@
             </div>
 
             <!-- Add Folder Button -->
-            <x-modal modalId="addFolder" triggerId="addFolder" triggerText="Add folder" title="Modal Title"
-                content="This is the modal content." class="add-folder-button" icon="img/icons/plus.png"
-                actions='#' />
+            <x-modal modalId="addFolder" triggerId="addFolder" triggerText="Add Folder" title="Please Confirm Your Role"
+                content="Please input the password to verify your role to do this action." class="add-folder-button"
+                icon="img/icons/plus.png" actions='#' modalIcon='img/icons/exclamation-circle.png'
+                actionButtonClass="primary-button" />
         </div>
     </nav>
 </div>

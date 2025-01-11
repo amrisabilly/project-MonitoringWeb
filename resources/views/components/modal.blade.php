@@ -1,4 +1,15 @@
-@props(['modalId', 'triggerId', 'triggerText', 'title', 'content', 'class', 'icon', 'actions'])
+@props([
+    'modalId',
+    'triggerId',
+    'triggerText',
+    'title',
+    'content',
+    'class',
+    'icon',
+    'actions',
+    'actionButtonClass',
+    'modalIcon',
+])
 
 <div>
     <style>
@@ -37,18 +48,17 @@
 
     <div id="modal-{{ $modalId }}" class="modal">
         <div class="modal-content">
-            <img src="img/icons/exclamation-circle.png" alt="" width="40px">
-            <p style="font-size: 25.1px; font-weight:bold; margin:0px;">Please Confirm Your Role</p>
-            <p style="margin-bottom:22px; margin-top:0px">Please input the password to verify your role to do this
-                action</p>
+            <img src="{{ $modalIcon }}" alt="" width="40px">
+            <p style="font-size: 25.1px; font-weight:bold; margin:0px;">{{ $title }}</p>
+            <p style="margin-bottom:22px; margin-top:0px">{{ $content }}</p>
             <div class="textfield" style="width: 85%; margin-bottom:2em">
                 <input type="text" placeholder="Input password here" />
             </div>
             <div style="display: flex; gap:1em;">
                 <button class="secondary-button" style="width:211px;height:29px; justify-content:center"
                     data-modal-id="modal-{{ $modalId }}"> Back </button>
-                <a href="{{ $actions }}"><button class="primary-button"
-                        style="width:211px;height:29px; justify-content:center"> Verify </button></a>
+                <a href="{{ $actions }}"><button class="{{ $actionButtonClass }}"
+                        style="width:211px;height:29px; justify-content:center"> {{ $triggerText }} </button></a>
             </div>
         </div>
     </div>
