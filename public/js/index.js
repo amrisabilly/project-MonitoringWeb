@@ -110,3 +110,4 @@ document.getElementById('renameOption').addEventListener('click', function () {
 document.getElementById('deleteOption').addEventListener('click', function () {
     alert('Delete clicked!');
 });
+
