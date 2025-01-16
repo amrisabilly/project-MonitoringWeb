@@ -1,4 +1,5 @@
 body{
+    all: unset;
     padding: inherit;
     margin: inherit;
     font-family: 'Poppins', sans-serif;

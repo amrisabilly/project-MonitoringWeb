@@ -1,12 +1,12 @@
+@props(['folders'])
+
 <div>
     <style>
         nav {
             width: 322px;
             background-color: #25160F;
             height: 100vh;
-            /* Full height of the viewport */
             position: fixed;
-            /* Ensure it stays on the left side */
             top: 0;
             left: 0;
             display: flex;
@@ -40,12 +40,10 @@
 
         .container {
             max-height: calc(100vh - 350px);
-            /* Adjust to fit content within full height */
             color: white;
             overflow-y: auto;
         }
 
-        /* Scrollbar styling */
         .container::-webkit-scrollbar {
             width: 10px;
         }
@@ -122,7 +120,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white
+            color: white;
         }
     </style>
 
@@ -130,7 +128,7 @@
         <div class="main-container">
             <!-- Logo Container -->
             <div class="logo-container">
-                <img src="img/logo.png" alt="Logo" class="logo-style">
+                <img src="{{ asset('img/logo.png') }}" alt="Logo" class="logo-style">
             </div>
 
             <!-- Device Segment -->
@@ -139,94 +137,33 @@
                 <hr class="divider">
                 <div class="container">
                     <!-- Root Folder -->
-                    <a href="">
+                    <a href="{{ url('/') }}">
                         <div class="group-button group-button-root">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
+                            <img src="{{ asset('img/icons/Folder_alt.png') }}" alt="Folder Icon">
                             <p>Root</p>
                         </div>
                     </a>
-
                     <!-- Other Folders -->
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Monitoring n Chill</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Apalah</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Itulah sama ini itulah dan lain lain</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Monitoring n Chill</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Apalah</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Itulah sama ini itulah dan lain lain</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Monitoring n Chill</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Apalah</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Itulah sama ini itulah dan lain lain</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Monitoring n Chill</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Apalah</p>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="group-button group-button-items">
-                            <img src="img/icons/Folder_alt.png" alt="Folder Icon">
-                            <p>Itulah sama ini itulah dan lain lain</p>
-                        </div>
-                    </a>
+                    @if ($folders->isEmpty())
+                        <p>No Folders available.</p>
+                    @else
+                        @foreach ($folders as $folder)
+                            <a href="{{ url('/folders/' . $folder->ID_folder) }}">
+                                <div class="group-button group-button-items">
+                                    <img src="{{ asset('img/icons/Folder_alt.png') }}" alt="Folder Icon">
+                                    <p>{{ $folder->nama }}</p>
+                                </div>
+                            </a>
+                        @endforeach
+                    @endif
                 </div>
             </div>
 
             <!-- Add Folder Button -->
             <x-modal modalId="addFolder" triggerId="addFolder" triggerText="Add Folder" title="Please Confirm Your Role"
                 content="Please input the password to verify your role to do this action." class="add-folder-button"
-                icon="img/icons/plus.png" actions='#' modalIcon='img/icons/exclamation-circle.png'
-                actionButtonClass="primary-button" />
+                icon="{{ asset('img/icons/plus.png') }}" actions='add-folder'
+                modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
         </div>
     </nav>
 </div>

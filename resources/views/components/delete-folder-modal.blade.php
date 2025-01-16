@@ -9,6 +9,7 @@
     'actions',
     'actionButtonClass',
     'modalIcon',
+    'deleteRoute', // Tambahkan route untuk delete
 ])
 
 <div>
@@ -51,21 +52,26 @@
             <img src="{{ $modalIcon }}" alt="" width="40px">
             <p style="font-size: 25.1px; font-weight:bold; margin:0px;">{{ $title }}</p>
             <p style="margin-bottom:22px; margin-top:0px">{{ $content }}</p>
-            <div class="textfield" style="width: 85%; margin-bottom:2em">
-                <input type="text" placeholder="Input password here" />
-            </div>
-            <div style="display: flex; gap:1em;">
-                <button class="secondary-button" style="width:211px;height:29px; justify-content:center"
-                    data-modal-id="modal-{{ $modalId }}"> Back </button>
-                <a href="{{ $actions }}">
-                    <button class="{{ $actionButtonClass }}" style="width:211px;height:29px; justify-content:center">
-                        {{ $triggerText }}
-                    </button>
-                </a>
-            </div>
+
+            <form action="{{ $deleteRoute }}" method="POST" style="width: 85%; margin-bottom:2em;">
+                @csrf
+                @method('DELETE')
+                <center>
+                    <div class="textfield" style="width: 85%; margin-bottom:2em">
+                        <input type="text" placeholder="Input password here" />
+                    </div>
+                </center>
+
+                <div style="display: flex; gap:1em;">
+                    <button type="button" class="secondary-button"
+                        style="width:211px;height:29px; justify-content:center"
+                        data-modal-id="modal-{{ $modalId }}">Back</button>
+                    <button type="submit" class="{{ $actionButtonClass }}"
+                        style="width:211px;height:29px; justify-content:center">Delete</button>
+                </div>
+            </form>
         </div>
     </div>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -80,8 +86,6 @@
             closeButton.addEventListener('click', () => {
                 modal.style.display = 'none';
             });
-
-
         });
     </script>
 </div>
