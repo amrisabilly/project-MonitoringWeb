@@ -4,6 +4,20 @@
 @section('title', $folders->nama) {{-- Menentukan title untuk halaman ini --}}
 
 @section('content')
+    <style>
+        li {
+            padding-block: 0.3em;
+            padding-inline: 1em;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+
+        li:hover {
+            background-color: #F56E02;
+            color: white
+        }
+    </style>
+
     <div style="display: flex; justify-content: space-between; align-items: center;">
         {{-- Title --}}
         <p class="title">
@@ -20,13 +34,14 @@
 
         <!-- Dropdown Options -->
         <div id="optionsDropdown"
-            style="display: none; position: absolute; left: 1250px; top: 25px; background-color: white; border: 1px solid #ddd; border-radius: 5px; padding: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); z-index: 10;">
+            style="display: none; position: absolute; left: 1180px; top: 25px; background-color: white; border: 1px solid #ddd; border-radius: 5px; padding: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); z-index: 10;">
             <ul style="list-style: none; padding: 0; margin: 0;">
-                <li style="margin-bottom: 10%;">
-                    <x-modal modalId="renameFolder" triggerId="renameFolder" triggerText="Rename" title="Rename Your Folder"
-                        content="Make it neat with an easy Folder rename." class="rename-dropdown" icon=""
-                        actions="add-device" modalIcon="{{ asset('img/icons/edit.png') }}"
-                        actionButtonClass="primary-button" />
+                <li>
+                    <x-rename-folder-modal modalId="renameFolder" triggerId="renameFolder" triggerText="Rename"
+                        title="Rename Your Folder" content="Make it neat with an easy Folder rename."
+                        class="rename-dropdown" icon="" actions="add-device"
+                        modalIcon="{{ asset('img/icons/edit.png') }}" actionButtonClass="primary-button"
+                        idFolder='{{ $folders->ID_folder }}' defaultName='{{ $folders->nama }}' />
                 </li>
                 <li>
                     <x-delete-folder-modal modalId="delete-folder-modal" triggerId="delete-folder-button"
@@ -93,30 +108,48 @@
 
     <p>Show 6 devices in this folder</p>
 
-    {{-- Item Table --}}
-    @include('components.item-table', ['device' => $devices])
 
-    {{-- Select All --}}
-    <div style="display: flex; align-items:center; width:97%; justify-content:space-between; padding: 0px 20px 0px 20px;">
-        <div style="display: flex; align-items:center; gap:1em">
-            <img src="{{ asset('img/icons/arrow1.png') }}" width="458px">
-            <input type="checkbox" name="" id="checkAllButton">
-            <p>Check All</p>
-        </div>
+    <form action="{{ route('bulkDelete') }}" method="POST" id="bulk-action-form">
+        @csrf
+        {{-- Item Table --}}
+        @include('components.item-table', ['device' => $devices])
 
-        <div style="display: flex; align-items:center; gap:1em">
-            <p style="color: rgba(0, 0, 0, 0.396); font-style:italic">With selected action</p>
-            {{-- Edit --}}
-            <x-modal modalId="edit" triggerId="edit" triggerText="Edit" title="Please Confirm Your Role"
-                content="Please input the password to verify your role to do this action." class="secondary-button"
-                icon="{{ asset('img/icons/edit.png') }}" actions="edit-device"
-                modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
-            {{-- Hapus --}}
-            <x-modal modalId="delete" triggerId="delete" triggerText="Delete" title="Please Confirm Your Role"
-                content="Please input the password to verify your role to do this action." class="danger-button"
-                icon="{{ asset('img/icons/trash-alt.png') }}" actions="#"
-                modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
+        {{-- Select All --}}
+        <div
+            style="display: flex; align-items:center; width:97%; justify-content:space-between; padding: 0px 20px 0px 20px;">
+            <div style="display: flex; align-items:center; gap:1em">
+                <img src="{{ asset('img/icons/arrow1.png') }}" width="458px">
+                <input type="checkbox" name="" id="checkAllButton">
+                <p>Check All</p>
+            </div>
+
+            <div style="display: flex; align-items:center; gap:1em">
+                <p style="color: rgba(0, 0, 0, 0.396); font-style:italic">With selected action</p>
+                {{-- Edit --}}
+                <x-edit-device-modal modalId="edit" triggerId="edit" triggerText="Edit" title="Please Confirm Your Role"
+                    content="Please input the password to verify your role to do this action." class="secondary-button"
+                    icon="{{ asset('img/icons/edit.png') }}" actions="edit-device"
+                    modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
+                {{-- Hapus --}}
+                <x-delete-device-modal modalId="delete" triggerId="delete" triggerText="Delete"
+                    title="Please Confirm Your Role"
+                    content="Please input the password to verify your role to do this action." class="danger-button"
+                    icon="{{ asset('img/icons/trash-alt.png') }}" actions="#"
+                    modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
+
+            </div>
         </div>
-    </div>
+    </form>
+
+
+
+    <script>
+        // Bulk Edit dengan form terpisah
+        function bulkEdit() {
+            const form = document.getElementById('bulk-action-form');
+            form.action = "{{ route('bulkEdit') }}";
+            form.submit();
+        }
+    </script>
 
 @endsection

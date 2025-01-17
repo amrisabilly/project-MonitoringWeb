@@ -130,11 +130,12 @@ if (isset($_GET['request_ping'])) {
             @foreach ($device as $devices)
                 <tr class="items-row">
                     <td style="text-align: center">
-                        <input type="checkbox" class="checkBox" name="" id="">
+                        <input type="checkbox" class="checkBox" name="ids[]" value="{{ $devices->ID_device }}">
                     </td>
                     <td>
                         <div>
-                            <p style="max-width: 287px; word-wrap: break-word;">
+                            <p style="max-width:
+                            287px; word-wrap: break-word;">
                                 {{ $devices->nama }}
                             </p>
                         </div>

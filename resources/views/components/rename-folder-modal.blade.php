@@ -9,6 +9,8 @@
     'actions',
     'actionButtonClass',
     'modalIcon',
+    'idFolder',
+    'defaultName',
 ])
 
 <div>
@@ -46,26 +48,30 @@
         {{ $triggerText }}
     </button>
 
-    <div id="modal-{{ $modalId }}" class="modal">
-        <div class="modal-content">
-            <img src="{{ $modalIcon }}" alt="" width="40px">
-            <p style="font-size: 25.1px; font-weight:bold; margin:0px;">{{ $title }}</p>
-            <p style="margin-bottom:22px; margin-top:0px">{{ $content }}</p>
-            <div class="textfield" style="width: 85%; margin-bottom:2em">
-                <input type="text" placeholder="Input password here" />
-            </div>
-            <div style="display: flex; gap:1em;">
-                <button type="button" class="secondary-button" style="width:211px;height:29px; justify-content:center"
-                    data-modal-id="modal-{{ $modalId }}"> Back </button>
-                <a href="{{ $actions }}">
-                    <button class="{{ $actionButtonClass }}" style="width:211px;height:29px; justify-content:center">
+    <form action="{{ route('folders.update') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id" value="{{ $idFolder }}">
+        <div id="modal-{{ $modalId }}" class="modal">
+            <div class="modal-content">
+                <img src="{{ $modalIcon }}" alt="" width="40px">
+                <p style="font-size: 25.1px; font-weight:bold; margin:0px;">{{ $title }}</p>
+                <p style="margin-bottom:22px; margin-top:0px">{{ $content }}</p>
+                <div class="textfield" style="width: 85%; margin-bottom:2em">
+                    <input type="text" placeholder="Input new folder name here" name="nama"
+                        value="{{ $defaultName }}" required />
+                </div>
+                <div style="display: flex; gap:1em;">
+                    <button type="button" class="secondary-button"
+                        style="width:211px;height:29px; justify-content:center"
+                        data-modal-id="modal-{{ $modalId }}"> Back </button>
+                    <button type="submit" class="{{ $actionButtonClass }}"
+                        style="width:211px;height:29px; justify-content:center">
                         {{ $triggerText }}
                     </button>
-                </a>
-
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 
 
     <script>

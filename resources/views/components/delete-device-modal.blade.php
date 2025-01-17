@@ -57,12 +57,10 @@
             <div style="display: flex; gap:1em;">
                 <button type="button" class="secondary-button" style="width:211px;height:29px; justify-content:center"
                     data-modal-id="modal-{{ $modalId }}"> Back </button>
-                <a href="{{ $actions }}">
-                    <button class="{{ $actionButtonClass }}" style="width:211px;height:29px; justify-content:center">
-                        {{ $triggerText }}
-                    </button>
-                </a>
-
+                <button class="{{ $actionButtonClass }}" style="width:211px;height:29px; justify-content:center"
+                    type="submit">
+                    {{ $triggerText }}
+                </button>
             </div>
         </div>
     </div>

@@ -129,7 +129,7 @@ class DeviceController extends Controller
     {
         $ids = $request->input('ids');
         if ($ids) {
-            Device::whereIn('id', $ids)->delete();
+            Device::whereIn('ID_device', $ids)->delete();
             return back()->with('success', 'Data berhasil dihapus!');
         }
         return back()->with('error', 'Tidak ada data yang dipilih!');
@@ -140,9 +140,31 @@ class DeviceController extends Controller
     {
         $ids = $request->input('ids');
         if ($ids) {
-            $items = Device::whereIn('id', $ids)->get();
-            return view('device.bulk-edit', compact('items'));
+            $devices = Device::whereIn('ID_device', $ids)->get();
+            return view('bulk-edit', compact('devices'));
         }
         return back()->with('error', 'Tidak ada data yang dipilih!');
+    }
+
+    // Bulk Edit Submit
+    public function bulkEditSubmit(Request $request)
+    {
+        $ids = $request->input('ID_device');
+        $device_names = $request->input('nama');
+        $ip_addresses = $request->input('IP_address');
+        $mac_addresses = $request->input('MAC_address');
+
+        foreach ($ids as $index => $id) {
+            $device = Device::find($id);
+            if ($device) {
+                $device->update([
+                    'nama' => $device_names[$index],
+                    'IP_address' => $ip_addresses[$index],
+                    'MAC_address' => $mac_addresses[$index],
+                ]);
+            }
+        }
+
+        return redirect('/')->with('success', 'Data perangkat berhasil diupdate!');
     }
 }

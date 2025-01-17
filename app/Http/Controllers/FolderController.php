@@ -73,4 +73,26 @@ class FolderController extends Controller
 
         return redirect('/')->with('success', 'Folder berhasil dihapus!');
     }
+
+    // Rename Folder
+    public function rename(Request $req)
+    {
+        $id = $req->input('id'); // ID folder yang akan diubah namanya
+        $newName = $req->input('nama'); // Nama baru folder
+
+        // Mencari folder berdasarkan ID
+        $folder = Folder::find($id);
+
+        // Jika folder tidak ditemukan
+        if (!$folder) {
+            return redirect()->back()->with('error', 'Folder tidak ditemukan!');
+        }
+
+        // Update nama folder
+        $folder->nama = $newName;
+        $folder->save(); // Simpan perubahan
+
+        // Kembali ke halaman sebelumnya setelah sukses
+        return redirect()->back()->with('error', 'Berhasil mengganti nama!');
+    }
 }

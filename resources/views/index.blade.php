@@ -60,31 +60,46 @@
 
     <p>Show 6 devices in this folder</p>
 
-    {{-- Item Table --}}
-    @include('components.item-table', ['device' => $device])
+    <form action="{{ route('bulkDelete') }}" method="POST" id="bulk-action-form">
+        @csrf
+        {{-- Item Table --}}
+        @include('components.item-table', ['device' => $device])
 
 
-    {{-- Select All --}}
-    <div style="display: flex; align-items:center; width:97%; justify-content:space-between; padding: 0px 20px 0px 20px;">
-        <div style="display: flex; align-items:center; gap:1em">
-            <img src="img/icons/arrow1.png" width="458px">
-            <input type="checkbox" name="" id="checkAllButton">
-            <p>Check All</p>
+        {{-- Select All --}}
+        <div
+            style="display: flex; align-items:center; width:97%; justify-content:space-between; padding: 0px 20px 0px 20px;">
+            <div style="display: flex; align-items:center; gap:1em">
+                <img src="img/icons/arrow1.png" width="458px">
+                <input type="checkbox" name="" id="checkAllButton">
+                <p>Check All</p>
+            </div>
+
+            <div style="display: flex; align-items:center; gap:1em">
+                <p style="color: rgba(0, 0, 0, 0.396); font-style:italic">With selected action</p>
+                {{-- Edit --}}
+                <x-edit-device-modal modalId="edit" triggerId="edit" triggerText="Edit" title="Please Confirm Your Role"
+                    content="Please input the password to verify your role to do this action." class="secondary-button"
+                    icon="img/icons/edit.png" actions="edit-device" modalIcon='img/icons/exclamation-circle.png'
+                    actionButtonClass="primary-button" />
+                {{-- Hapus --}}
+                <x-delete-device-modal modalId="delete" triggerId="delete" triggerText="Delete"
+                    title="Please Confirm Your Role"
+                    content="Please input the password to verify your role to do this action." class="danger-button"
+                    icon="img/icons/trash-alt.png" actions="#" modalIcon='img/icons/exclamation-circle.png'
+                    actionButtonClass="primary-button" />
+
+            </div>
         </div>
+    </form>
 
-        <div style="display: flex; align-items:center; gap:1em">
-            <p style="color: rgba(0, 0, 0, 0.396); font-style:italic">With selected action</p>
-            {{-- Edit --}}
-            <x-modal modalId="edit" triggerId="edit" triggerText="Edit" title="Please Confirm Your Role"
-                content="Please input the password to verify your role to do this action." class="secondary-button"
-                icon="img/icons/edit.png" actions="edit-device" modalIcon='img/icons/exclamation-circle.png'
-                actionButtonClass="primary-button" />
-            {{-- Hapus --}}
-            <x-modal modalId="delete" triggerId="delete" triggerText="Delete" title="Please Confirm Your Role"
-                content="Please input the password to verify your role to do this action." class="danger-button"
-                icon="img/icons/trash-alt.png" actions="#" modalIcon='img/icons/exclamation-circle.png'
-                actionButtonClass="primary-button" />
-        </div>
-    </div>
+    <script>
+        // Bulk Edit dengan form terpisah
+        function bulkEdit() {
+            const form = document.getElementById('bulk-action-form');
+            form.action = "{{ route('bulkEdit') }}";
+            form.submit();
+        }
+    </script>
 
 @endsection
