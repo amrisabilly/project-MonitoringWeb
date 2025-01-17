@@ -28,7 +28,7 @@ if (isset($_GET['request_ping'])) {
             padding: 0px;
             margin-bottom: 1em;
             border-collapse: collapse;
-            height: 315px;
+            height: 120px;
         }
 
         .header {

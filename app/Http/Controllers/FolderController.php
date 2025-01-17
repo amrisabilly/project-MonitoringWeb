@@ -14,8 +14,11 @@ class FolderController extends Controller
         // Mengambil semua folder dengan perangkat yang terkait
         $folders = Folder::with('devices')->get();
 
+        // Menghitung jumlah folder
+        $totalFolders = Folder::count();
+
         // Kirim data ke view
-        return view('index', compact('folders'));
+        return view('index', compact('folders', 'totalFolders'));
     }
 
     public function store(Request $request)

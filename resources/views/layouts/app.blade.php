@@ -8,13 +8,27 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', 'Root')</title>
 
-    {{-- Menggunakan asset() untuk path CSS yang dinamis --}}
     <link rel="stylesheet" href="{{ asset('css/root.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+    </style>
 </head>
 
 <body>
@@ -27,18 +41,19 @@
     <div class="main-content">
         {{-- Main Content --}}
         @yield('content')
+        <div style="margin-bottom: 3em"></div>
 
-        {{-- Footer --}}
-        <div style="margin-top: 3em; width: 1050px;">
-            <hr>
-            <div style="display: flex; justify-content: space-between;">
-                <p style="opacity: 0.5">
-                    Sistem Monitoring Jaringan PT Jamu dan Farmaasi Sido Muncul
-                </p>
-                <p style="opacity: 0.25">
-                    Copyright © 2025 Sidomuncul - All Right Reserved
-                </p>
-            </div>
+    </div>
+    {{-- Footer --}}
+    <div style="width: 1070px; margin-left: 412px;">
+        <hr style="margin: 0px">
+        <div style="display: flex; justify-content: space-between;">
+            <p style="opacity: 0.5">
+                Sistem Monitoring Jaringan PT Jamu dan Farmaasi Sido Muncul
+            </p>
+            <p style="opacity: 0.25">
+                Copyright © 2025 Sidomuncul - All Right Reserved
+            </p>
         </div>
     </div>
 

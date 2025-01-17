@@ -162,7 +162,7 @@
             <!-- Add Folder Button -->
             <x-modal modalId="addFolder" triggerId="addFolder" triggerText="Add Folder" title="Please Confirm Your Role"
                 content="Please input the password to verify your role to do this action." class="add-folder-button"
-                icon="{{ asset('img/icons/plus.png') }}" actions='add-folder'
+                icon="{{ asset('img/icons/plus.png') }}" actions='/add-folder'
                 modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
         </div>
     </nav>
