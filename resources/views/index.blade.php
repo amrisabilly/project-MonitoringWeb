@@ -40,8 +40,8 @@
         <div class="features">
             {{-- Search bar --}}
             <div class="textfield" style="flex: 1">
-                <input type="text" placeholder="Search Device ..." />
-                <img src="img/icons/search-alt.png" alt="Search Icon" />
+                <input type="text" id="searchInput" placeholder="Search Device ..." />
+                <img src="{{ asset('img/icons/search-alt.png') }}" alt="Search Icon" />
             </div>
 
             {{-- Sort --}}
@@ -104,7 +104,7 @@
                         title="Please Confirm Your Role"
                         content="Please input the password to verify your role to do this action." class="danger-button"
                         icon="img/icons/trash-alt.png" actions="#" modalIcon='img/icons/exclamation-circle.png'
-                        actionButtonClass="primary-button" />
+                        actionButtonClass="primary-button" submitFormId="bulk-action-form" />
 
                 </div>
             </div>
@@ -145,6 +145,21 @@
             form.action = "{{ route('bulkEdit') }}";
             form.submit();
         }
+
+        // Fungsi Search
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableRows = document.querySelectorAll('.items-row');
+
+            searchInput.addEventListener('input', function() {
+                const query = searchInput.value.toLowerCase();
+
+                tableRows.forEach(row => {
+                    const deviceName = row.querySelector('.device-name').textContent.toLowerCase();
+                    row.style.display = deviceName.includes(query) ? '' : 'none';
+                });
+            });
+        });
     </script>
 
 @endsection

@@ -65,7 +65,7 @@
                         style="width:211px;height:29px; justify-content:center"
                         data-modal-id="modal-{{ $modalId }}"> Back </button>
                     <button type="submit" class="{{ $actionButtonClass }}"
-                        style="width:211px;height:29px; justify-content:center">
+                        style="width:211px;height:29px; justify-content:center;color:white">
                         {{ $triggerText }}
                     </button>
                 </div>

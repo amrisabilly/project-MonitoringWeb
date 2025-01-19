@@ -36,9 +36,15 @@
             padding: 60px;
             border: 1px solid #888;
             width: 540px;
-            height: 317px;
+            height: 350px;
             border-radius: 8px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 8px;
         }
     </style>
 
@@ -53,21 +59,26 @@
             <p style="font-size: 25.1px; font-weight:bold; margin:0px;">{{ $title }}</p>
             <p style="margin-bottom:22px; margin-top:0px">{{ $content }}</p>
 
-            <form action="{{ $deleteRoute }}" method="POST" style="width: 85%; margin-bottom:2em;">
+            <form id="deleteForm" action="{{ $deleteRoute }}" method="POST" style="width: 85%; ">
                 @csrf
                 @method('DELETE')
                 <center>
                     <div class="textfield" style="width: 85%; margin-bottom:2em">
-                        <input type="text" placeholder="Input password here" />
+                        <input type="password" id="passwordInput-{{ $modalId }}"
+                            placeholder="Input password here" />
                     </div>
+
+                    <p id="errorMessage-{{ $modalId }}" class="error-message" style="display: none;">Your password
+                        is
+                        incorrect, Please try again</p>
                 </center>
 
-                <div style="display: flex; gap:1em;">
+                <div style="display: flex; gap:1em; margin-top:2em;">
                     <button type="button" class="secondary-button"
                         style="width:211px;height:29px; justify-content:center"
                         data-modal-id="modal-{{ $modalId }}">Back</button>
-                    <button type="submit" class="{{ $actionButtonClass }}"
-                        style="width:211px;height:29px; justify-content:center">Delete</button>
+                    <button type="button" id="actionButton-{{ $modalId }}" class="{{ $actionButtonClass }}"
+                        style="width:211px;height:29px; justify-content:center;color:white">Delete</button>
                 </div>
             </form>
         </div>
@@ -78,13 +89,32 @@
             const trigger = document.getElementById('{{ $triggerId }}');
             const modal = document.getElementById('modal-{{ $modalId }}');
             const closeButton = modal.querySelector('[data-modal-id="modal-{{ $modalId }}"]');
+            const actionButton = document.getElementById('actionButton-{{ $modalId }}');
+            const passwordInput = document.getElementById('passwordInput-{{ $modalId }}');
+            const errorMessage = document.getElementById('errorMessage-{{ $modalId }}');
+            const deleteForm = document.getElementById('deleteForm');
+            const correctPassword = "sidomuncul-55"; // Password verifikasi
 
+            // Show modal
             trigger.addEventListener('click', () => {
                 modal.style.display = 'block';
+                passwordInput.value = ''; // Reset input
+                errorMessage.style.display = 'none'; // Reset error message
             });
 
+            // Close modal
             closeButton.addEventListener('click', () => {
                 modal.style.display = 'none';
+            });
+
+            // Action button click handler (verifikasi password dan submit form jika benar)
+            actionButton.addEventListener('click', () => {
+                if (passwordInput.value === correctPassword) {
+                    deleteForm.submit(); // Jika password benar, kirim form delete
+                } else {
+                    // Jika password salah, tampilkan pesan error
+                    errorMessage.style.display = 'block';
+                }
             });
         });
     </script>

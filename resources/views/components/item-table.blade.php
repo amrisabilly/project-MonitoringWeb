@@ -132,7 +132,7 @@ if (isset($_GET['request_ping'])) {
                     <td style="text-align: center">
                         <input type="checkbox" class="checkBox" name="ids[]" value="{{ $devices->ID_device }}">
                     </td>
-                    <td>
+                    <td class="device-name">
                         <div>
                             <p style="max-width:
                             287px; word-wrap: break-word;">

@@ -4,6 +4,20 @@
 @section('title', 'Add Device')
 
 @section('content')
+    <style>
+        .primary-button {
+            all: unset;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            padding: 12px 8px 12px 8px;
+            box-shadow: 2px 2px 12px rgba(220, 208, 208, 0.6);
+            font-weight: 600;
+            background-color: #F56E02;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
 
     {{-- Folder --}}
     <p style="margin-bottom: 0px; margin-left:53px">

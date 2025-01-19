@@ -23,6 +23,19 @@
             border: #F56E02 1px solid;
             cursor: pointer;
         }
+
+        .primary-button {
+            all: unset;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            padding: 12px 8px 12px 8px;
+            box-shadow: 2px 2px 12px rgba(220, 208, 208, 0.6);
+            font-weight: 600;
+            background-color: #F56E02;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -52,9 +65,10 @@
                 </li>
                 <li>
                     <x-delete-folder-modal modalId="delete-folder-modal" triggerId="delete-folder-button"
-                        triggerText="Delete Folder" title="Are you sure?" content="Do you want to delete this folder?"
-                        class="delete-dropdown" icon="" actions="" actionButtonClass="danger-button"
-                        modalIcon="{{ asset('img/icons/trash-alt-red.png') }}"
+                        triggerText="Delete Folder" title="Please Confirm Your Role"
+                        content="Please input the password to verify your role to do this action." class="delete-dropdown"
+                        icon="" actions="" actionButtonClass="primary-button"
+                        modalIcon="{{ asset('img/icons/exclamation-circle.png') }}"
                         deleteRoute="{{ route('folders.destroy', $folders->ID_folder) }}" />
 
                 </li>
@@ -74,9 +88,10 @@
         <div class="features">
             {{-- Search bar --}}
             <div class="textfield" style="flex: 1">
-                <input type="text" placeholder="Search Device ..." />
+                <input type="text" id="searchInput" placeholder="Search Device ..." />
                 <img src="{{ asset('img/icons/search-alt.png') }}" alt="Search Icon" />
             </div>
+
 
             {{-- Sort --}}
             <a href="javascript:void(0)" id="sortButton">
@@ -139,7 +154,8 @@
                         title="Please Confirm Your Role"
                         content="Please input the password to verify your role to do this action." class="danger-button"
                         icon="{{ asset('img/icons/trash-alt.png') }}" actions="#"
-                        modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
+                        modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button"
+                        submitFormId="bulk-action-form" />
 
                 </div>
             </div>
@@ -206,6 +222,21 @@
             form.action = "{{ route('bulkEdit') }}";
             form.submit();
         }
+
+        // Fungsi Search
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableRows = document.querySelectorAll('.items-row');
+
+            searchInput.addEventListener('input', function() {
+                const query = searchInput.value.toLowerCase();
+
+                tableRows.forEach(row => {
+                    const deviceName = row.querySelector('.device-name').textContent.toLowerCase();
+                    row.style.display = deviceName.includes(query) ? '' : 'none';
+                });
+            });
+        });
     </script>
 
 @endsection
