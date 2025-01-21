@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use App\Models\Folder;
+use App\Models\Log;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
@@ -13,19 +14,6 @@ class DeviceController extends Controller
     {
         $device = Device::all(); // Ambil data perangkat
         return view('index', compact('device')); // Kirim data ke view utama (index.blade.php)
-    }
-
-    // Berdasarkan Folder
-    public function showDevicesByFolder($id)
-    {
-        // Mengambil data folder berdasarkan ID
-        $folder = Folder::findOrFail($id);
-
-        // Mengambil perangkat yang terkait dengan folder
-        $devices = Device::where('ID_folder', $id)->get();
-
-        // Kirim data folder dan perangkat ke view
-        return view('components.item-table', compact('folder', 'devices'));
     }
 
     public function toggle(Request $request, $deviceId)
@@ -111,8 +99,6 @@ class DeviceController extends Controller
             'MAC_address' => $request->MAC_address,
             'status' => 0, // Set default status ke 0
             'toggle' => 0, // Set default toggle ke 0
-            'tanggal_dibuat' => now(),
-            'tanggal_diubah' => now(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -166,5 +152,36 @@ class DeviceController extends Controller
         }
 
         return redirect('/')->with('success', 'Data perangkat berhasil diupdate!');
+    }
+
+    // Fungsi untuk menyimpan log status perangkat
+    public function saveLog(Request $request)
+    {
+        try {
+            // Validasi input
+            $request->validate([
+                'device_id' => 'required|integer',
+                'status' => 'required|boolean',
+            ]);
+
+            // Menyimpan log ke tabel logs
+            $log = new Log();
+            $log->device_id = $request->device_id;
+            $log->status = $request->status;
+            $log->save();
+
+            return response()->json([
+                'message' => 'Log saved successfully',
+                'log' => $log
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error saving log: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function showDeviceDetails($id)
+    {
+        $device = Device::findOrFail($id); // atau menggunakan query yang sesuai
+        return response()->json($device);
     }
 }

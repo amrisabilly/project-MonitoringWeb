@@ -130,6 +130,14 @@
 
         <p>Show {{ $devices->count() }} devices in this folder</p>
 
+
+        @foreach ($logs as $log)
+            @for ($i = 0; $i < count($log); $i++)
+                <h1>{{ $log[$i]->device_id }}</h1>
+                <h1>{{ $log[$i]->created_at }}</h1>
+            @endfor
+        @endforeach
+
         <form action="{{ route('bulkDelete') }}" method="POST" id="bulk-action-form">
             @csrf
             {{-- Item Table --}}

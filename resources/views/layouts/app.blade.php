@@ -14,7 +14,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <style>
         body {
@@ -45,7 +45,7 @@
 
     </div>
     {{-- Footer --}}
-    <div style="width: 1070px; margin-left: 412px;">
+    <div style=" margin-left: 342px; padding: 20px 60px 20px 60px;">
         <hr style="margin: 0px">
         <div style="display: flex; justify-content: space-between;">
             <p style="opacity: 0.5">

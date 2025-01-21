@@ -98,6 +98,120 @@ if (isset($_GET['request_ping'])) {
         .inactive-row {
             color: rgba(0, 0, 0, 0.5)
         }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .log-modal-content {
+            background-color: #fff;
+            padding-block: 20px;
+            padding-inline: 80px;
+            margin: 5% auto;
+            width: 70%;
+            border-radius: 15px;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            all: unset;
+            color: #F56E02;
+            float: right;
+            font-size: 42px;
+            cursor: pointer;
+        }
+
+        .modal-header-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin-bottom: 0px;
+        }
+
+        .modal-header-table td table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            color: black;
+            display: flex;
+            justify-content: stretch;
+            flex-direction: column-reverse;
+        }
+
+        .modal-header-table td table td {
+            padding-block: 6px;
+        }
+
+        .time-button button {
+            width: 90px;
+            height: 43px;
+            background-color: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .time-button button:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: inherit;
+            table-layout: fixed;
+            padding: 24px;
+            margin-bottom: 0px;
+            margin-top: 0px;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .table-head {
+            padding: 8px;
+            background-color: #512508;
+            color: white
+        }
+
+        /* Set a fixed height for the tbody */
+        #log-content {
+            height: 200px;
+            /* Adjust this height based on your design */
+            overflow-y: auto;
+            /* Enable vertical scrollbar if content overflows */
+            display: block;
+            /* Make tbody block-level to allow scrolling */
+        }
+
+        /* Scrollbar styling */
+        #log-content::-webkit-scrollbar,
+        .log-modal-content::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        #log-content::-webkit-scrollbar-track,
+        .log-modal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.134);
+            border-radius: 5px;
+        }
+
+        #log-content::-webkit-scrollbar-thumb,
+        .log-modal-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 5px;
+        }
+
+        #log-content::-webkit-scrollbar-thumb:hover,
+        :.log-modal-content::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
     </style>
 
     {{-- Main Table --}}
@@ -128,14 +242,13 @@ if (isset($_GET['request_ping'])) {
 
         <tbody>
             @foreach ($device as $devices)
-                <tr class="items-row">
+                <tr class="items-row" data-id="{{ $devices->ID_device }}">
                     <td style="text-align: center">
                         <input type="checkbox" class="checkBox" name="ids[]" value="{{ $devices->ID_device }}">
                     </td>
                     <td class="device-name">
                         <div>
-                            <p style="max-width:
-                            287px; word-wrap: break-word;">
+                            <p style="max-width: 287px; word-wrap: break-word;">
                                 {{ $devices->nama }}
                             </p>
                         </div>
@@ -155,24 +268,194 @@ if (isset($_GET['request_ping'])) {
                             </p>
                         </center>
                     </td>
-
                     <td style="text-align: center">
                         <p>{{ $devices->MAC_address }}</p>
                     </td>
                     <td style="text-align: center">
                         <center>
                             <x-toggle :id="'toggle' . $devices->ID_device" :isActive="$devices->toggle == 1" class="device-toggle" :deviceId="$devices->ID_device" />
-
                         </center>
                     </td>
                 </tr>
             @endforeach
-
         </tbody>
-
-
-
     </table>
+
+    {{-- Modal --}}
+    <div class="modal" id="log-modal" style="display: none;">
+        <div class="log-modal-content">
+            {{-- Close Button --}}
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            {{-- Modal Header --}}
+            <table class="modal-header-table">
+                <tr>
+                    {{-- Kolom kiri --}}
+                    <td>
+                        <table>
+                            {{-- Baris 1 --}}
+                            <tr>
+                                <td>
+                                    Device Name
+                                </td>
+                                <td style="width:20px;">
+                                    <center>
+                                        :
+                                    </center>
+                                </td>
+                                <td class="device-name"></td>
+                            </tr>
+                            {{-- Baris 2 --}}
+                            <tr>
+                                <td>
+                                    IP Address
+                                </td>
+                                <td style="width:20px;">
+                                    <center>
+
+                                        :
+                                    </center>
+                                </td>
+                                <td class="ip-address"></td>
+                            </tr>
+                            {{-- Baris 3 --}}
+                            <tr>
+                                <td>
+                                    MAC Address
+                                </td>
+                                <td style="width:20px;">
+                                    <center>
+
+                                        :
+                                    </center>
+                                </td>
+                                <td class="mac-address"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    {{-- Kolom Tengah --}}
+                    <td>
+                        <table>
+                            {{-- Baris 1 --}}
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td>
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            {{-- Baris 2 --}}
+                            <tr>
+                                <td>
+                                    Created at
+                                </td>
+                                <td style="width:20px;">
+                                    <center>
+
+                                        :
+                                    </center>
+                                </td>
+                                <td class="created-at"></td>
+                            </tr>
+                            {{-- Baris 3 --}}
+                            <tr>
+                                <td>
+                                    Last modified
+                                </td>
+                                <td style="width:20px;">
+                                    <center>
+
+                                        :
+                                    </center>
+                                </td>
+                                <td class="last-modified"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <hr style="border: 1px solid black;">
+
+            {{-- Title --}}
+            <div style="display: flex; justify-content:space-between;align-items:center">
+                <div>
+                    <p style="font-size: 22px; font-weight:bold; margin-bottom:0px">Device's Record</p>
+                    <p style="margin-top:0px">See summary result from this device</p>
+                </div>
+                <div style="display: flex; justify-items:stretch" class="time-button">
+                    <button style="border-radius: 5px 0px 0px 5px ">
+                        7 days
+                    </button>
+                    <button>
+                        Month
+                    </button>
+                    <button style="border-radius: 0px 5px 5px 0px ">
+                        Year
+                    </button>
+                </div>
+            </div>
+
+            {{-- Log Device Status & Stats Summary --}}
+            <table class="content-table">
+                <tr>
+                    {{-- Log Device Status --}}
+                    <td style="width:652px; border-right:1px solid rgba(0, 0, 0, 0.3);">
+                        <center>
+                            <p><strong>Log Device Status</strong></p>
+                            <div
+                                style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.3); width:90%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead class="table-head" style="display: table;width: 100%;table-layout: fixed;">
+                                        <tr>
+                                            <td>Event Time</td>
+                                            <td>
+                                                <center>Status</center>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="log-content">
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </center>
+                    </td>
+                    {{-- Stats Summary --}}
+                    <td style="padding-left: 24px; display:block; align-items:start">
+                        <p style="text-align: center"><strong>Stats Summary</strong></p>
+                        {{-- online --}}
+                        <div style="display: flex; margin-bottom:1em">
+                            <div
+                                style="width:64px;  color:white;border-radius:5px;background-color: #34C759; display:flex;align-items:center; justify-content:center">
+                                50%
+                            </div>
+                            <div style="height 44px; margin-left:1em;">
+                                <div><strong> 1 Times </strong></div>
+                                <div>Online result</div>
+                            </div>
+                        </div>
+                        {{-- offline --}}
+                        <div style="display: flex;">
+                            <div
+                                style="width:64px;  color:white;border-radius:5px;background-color: #CB0B00; display:flex;align-items:center; justify-content:center">
+                                50%
+                            </div>
+                            <div style="height 44px; margin-left:1em;">
+                                <div><strong> 1 Times </strong></div>
+                                <div>Offline result</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
 
     <script>
         function staticToggle(element) {
@@ -196,6 +479,7 @@ if (isset($_GET['request_ping'])) {
                 row.classList.add('inactive-row');
             }
         });
+
 
 
         const pingIntervals = {}; // Object untuk menyimpan interval per device
@@ -236,6 +520,39 @@ if (isset($_GET['request_ping'])) {
                 .catch(error => console.error('Update status error:', error));
         }
 
+        // Menyimpan status terakhir perangkat
+        let deviceStatusCache = {};
+
+        // Fungsi untuk mencatat log hanya jika status berubah
+        function writeLog(deviceId, status) {
+            console.log(`Writing log for device ${deviceId}: Status changed to ${status === 1 ? 'Online' : 'Offline'}`);
+
+            // Kirim permintaan POST untuk menyimpan log
+            fetch('/save-log', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({
+                        device_id: deviceId,
+                        status: status
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(text);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Log saved:', data);
+                })
+                .catch(error => console.error('Save log error:', error));
+        }
+
         // Fungsi untuk melakukan ping perangkat
         function pingDevice(ipAddress, deviceId) {
             fetch(`/ping?request_ping=true&ip_address=${ipAddress}`)
@@ -244,14 +561,23 @@ if (isset($_GET['request_ping'])) {
                     const pingResult = data.ping_success;
                     console.log(`Ping result for device ${deviceId}: ${pingResult ? 'Online' : 'Offline'}`);
 
-                    if (pingResult) {
+                    // Cek apakah status perangkat berubah
+                    if (pingResult && deviceStatusCache[deviceId] !== 1) {
+                        // Status berubah dari Offline ke Online
                         updateDeviceStatus(deviceId, 1); // Update status ke online
-                    } else {
+                        writeLog(deviceId, 1); // Catat log online
+                        deviceStatusCache[deviceId] = 1; // Simpan status terbaru
+                    } else if (!pingResult && deviceStatusCache[deviceId] !== 0) {
+                        // Status berubah dari Online ke Offline
                         updateDeviceStatus(deviceId, 0); // Update status ke offline
+                        writeLog(deviceId, 0); // Catat log offline
+                        deviceStatusCache[deviceId] = 0; // Simpan status terbaru
                     }
                 })
                 .catch(error => console.error('Ping Error:', error));
         }
+
+
 
         // Fungsi untuk mengatur ping berdasarkan status toggle
         function handleToggleChange(deviceId, ipAddress) {
@@ -292,6 +618,98 @@ if (isset($_GET['request_ping'])) {
         @foreach ($device as $devices)
             handleToggleChange({{ $devices->ID_device }}, '{{ $devices->IP_address }}');
         @endforeach
+
+        // Modal Log
+        const table = document.getElementById('itemTable');
+        const modal = document.getElementById('log-modal');
+        const detailContent = document.getElementById('log-content');
+
+        // Mendengarkan event double click pada row tabel
+        table.addEventListener('dblclick', function(e) {
+            const tr = e.target.closest('tr');
+            if (tr && tr.dataset.id) {
+                const deviceId = tr.dataset.id;
+
+                // Fetch detail device data (Nama perangkat, IP, MAC, dll)
+                axios.get(`/device/${deviceId}`)
+                    .then(response => {
+                        const devices = response.data;
+                        const createdAt = new Date(devices.created_at);
+                        const CreatedformattedDate = createdAt.toLocaleString('en-GB', {
+                            weekday: 'short',
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+                        const updatedAt = new Date(devices.updated_at);
+                        const UpdatedformattedDate = updatedAt.toLocaleString('en-GB', {
+                            weekday: 'short',
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+
+                        // Update modal dengan detail perangkat
+                        document.querySelector('#log-modal .device-name').textContent = devices
+                            .nama;
+                        document.querySelector('#log-modal .ip-address').textContent = devices.IP_address;
+                        document.querySelector('#log-modal .mac-address').textContent = devices
+                            .MAC_address;
+                        document.querySelector('#log-modal .created-at').textContent = CreatedformattedDate;
+                        document.querySelector('#log-modal .last-modified').textContent = UpdatedformattedDate;
+
+                        // Fetch log data untuk perangkat ini
+                        return axios.get(`${deviceId}/log`);
+                    })
+                    .then(response => {
+                        const logs = response.data.logs;
+                        detailContent.innerHTML = ''; // Clear previous content
+
+                        // Populate modal dengan log data
+                        logs.forEach(log => {
+                            const createdAt = new Date(log.created_at);
+                            const formattedDate = createdAt.toLocaleString('en-GB', {
+                                weekday: 'short',
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+
+                            const row = `
+                        <tr style="display: table;width: 100%;table-layout: fixed;">
+                            <td style="padding: 8px">${formattedDate}</td>
+                            <td style="padding-block: 8px; color: ${log.status == 0 ? 'red' : 'green'}">
+                                <center>
+                                    ${log.status == 0 ? 'Offline' : 'Online'}
+                                </center>
+                            </td>
+                        </tr>
+                    `;
+                            detailContent.insertAdjacentHTML('beforeend', row);
+                        });
+
+                        // Show modal
+                        modal.style.display = 'block';
+                    })
+                    .catch(error => {
+                        alert('Failed to load device details or logs');
+                    });
+            }
+        });
+
+        // Function to close modal
+        function closeModal() {
+            modal.style.display = 'none';
+        }
     </script>
 
-</div>
+</div> 

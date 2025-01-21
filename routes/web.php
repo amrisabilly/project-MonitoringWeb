@@ -3,8 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\DeviceController;
-use App\Models\Device;
-use App\Models\Folder;
+use App\Http\Controllers\LogController;
 
 // Main Route
 Route::get('/', [DeviceController::class, 'index']);
@@ -32,6 +31,11 @@ Route::post('/bulk-delete', [DeviceController::class, 'bulkDelete'])->name('bulk
 Route::post('/bulk-edit', [DeviceController::class, 'bulkEdit'])->name('bulkEdit');
 Route::post('/bulk-edit-submit', [DeviceController::class, 'bulkEditSubmit'])->name('bulkEditSubmit');
 
+Route::get('device/{id}', [DeviceController::class, 'showDeviceDetails']);
+
+// Write Log
+Route::post('/save-log', [DeviceController::class, 'saveLog']);
+Route::get('/{id}/log', [LogController::class, 'showLogs']);
 
 
 // request untuk melakukan PING
