@@ -20,20 +20,28 @@
     </style>
 
     {{-- Folder --}}
-    <p style="margin-bottom: 0px; margin-left:53px">
+    {{-- <p style="margin-bottom: 0px; margin-left:53px">
         {{ $folders->nama }}
-    </p>
+    </p> --}}
 
-    <div style="display: flex; align-items:center; flex:1; gap: 1em ">
-        {{-- back button --}}
-        <a href="/folders/{{ $folders->ID_folder }}">
-            <img src="{{ asset('img/icons/arrow-left.png') }}" alt="" width="36px">
-        </a>
-        {{-- Title --}}
-        <p class="title">
-            Add Device
-        </p>
+    <div style="display: flex; align-items:center; flex:1">
+        <div style="display: flex; align-items:center; flex:1; gap: 1em ">
+            {{-- back button --}}
+            <a href="/folders/{{ $folders->ID_folder }}">
+                <img src="{{ asset('img/icons/arrow-left.png') }}" alt="" width="36px">
+            </a>
+            {{-- Title --}}
+            <p class="title">
+                Add Device
+            </p>
+        </div>
+
+        <div class="breadcrumbs">
+            <a href="/folders/{{ $folders->ID_folder }}">{{ $folders->nama }}</a> &gt;
+            <span>Add Device</span>
+        </div>
     </div>
+
     <hr style="margin-bottom: 3em">
 
     {{-- Form --}}

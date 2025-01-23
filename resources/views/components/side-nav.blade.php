@@ -122,6 +122,10 @@
             justify-content: center;
             color: white;
         }
+
+        .active .group-button {
+            background-color: #B66B13;/
+        }
     </style>
 
     <nav>
@@ -137,7 +141,7 @@
                 <hr class="divider">
                 <div class="container">
                     <!-- Root Folder -->
-                    <a href="{{ url('/') }}">
+                    <a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">
                         <div class="group-button group-button-root">
                             <img src="{{ asset('img/icons/Folder_alt.png') }}" alt="Folder Icon">
                             <p>Root</p>
@@ -148,7 +152,8 @@
                         <p>No Folders available.</p>
                     @else
                         @foreach ($folders as $folder)
-                            <a href="{{ url('/folders/' . $folder->ID_folder) }}">
+                            <a href="{{ url('/folders/' . $folder->ID_folder) }}"
+                                class="{{ request()->is('folders/' . $folder->ID_folder) ? 'active' : '' }}">
                                 <div class="group-button group-button-items">
                                     <img src="{{ asset('img/icons/Folder_alt.png') }}" alt="Folder Icon">
                                     <p>{{ $folder->nama }}</p>
@@ -166,4 +171,5 @@
                 modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
         </div>
     </nav>
+
 </div>

@@ -58,7 +58,8 @@
             <p style="font-size: 25.1px; font-weight:bold; margin:0px;">{{ $title }}</p>
             <p style="margin-bottom:22px; margin-top:0px">{{ $content }}</p>
             <div class="textfield" style="width: 85%; ">
-                <input type="password" id="passwordInput-{{ $modalId }}" placeholder="Input password here" />
+                <input type="password" id="passwordInput-{{ $modalId }}" placeholder="Input password here"
+                    onkeydown="preventSubmit(event)" />
             </div>
             <p id="errorMessage-{{ $modalId }}" class="error-message" style="display: none;">Your
                 password is
@@ -106,5 +107,11 @@
                 }
             });
         });
+
+        function preventSubmit(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Mencegah form disubmit
+            }
+        }
     </script>
 </div>

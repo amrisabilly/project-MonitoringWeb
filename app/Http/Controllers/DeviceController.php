@@ -124,6 +124,7 @@ class DeviceController extends Controller
     // Bulk Edit
     public function bulkEdit(Request $request)
     {
+
         $ids = $request->input('ids');
         if ($ids) {
             $devices = Device::whereIn('ID_device', $ids)->get();

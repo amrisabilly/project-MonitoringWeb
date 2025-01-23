@@ -53,3 +53,14 @@ Route::get('ping', function () {
     // Mengembalikan hasil dalam format JSON
     return response()->json(['ping_success' => $pingSuccess]);
 });
+
+// request untuk Tracert 
+Route::get('/run-tracert/{ip}', function ($ip) {
+    if (!filter_var($ip, FILTER_VALIDATE_IP) && !filter_var($ip, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+        return response()->json(['error' => 'Invalid IP address or hostname.'], 400);
+    }
+
+    $output = shell_exec("tracert $ip");
+
+    return response()->json(['output' => nl2br($output)]);
+});

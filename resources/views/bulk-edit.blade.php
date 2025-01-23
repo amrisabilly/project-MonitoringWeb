@@ -19,6 +19,7 @@
         }
     </style>
 
+
     <div style="display: flex; align-items:center; flex:1; gap: 1em ">
         {{-- back button --}}
         <a href="/">
@@ -29,6 +30,8 @@
             Edit Device
         </p>
     </div>
+
+
     <hr style="margin-bottom: 3em">
 
     {{-- Edit Form --}}

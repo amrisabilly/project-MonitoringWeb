@@ -116,10 +116,10 @@ if (isset($_GET['request_ping'])) {
             background-color: #fff;
             padding-block: 20px;
             padding-inline: 80px;
-            margin: 5% auto;
+            margin: 1% auto;
             width: 70%;
             border-radius: 15px;
-            max-height: 80%;
+            max-height: 90%;
             overflow-y: auto;
         }
 
@@ -167,7 +167,7 @@ if (isset($_GET['request_ping'])) {
             width: 100%;
             border-collapse: inherit;
             table-layout: fixed;
-            padding: 24px;
+            padding: 24px 24px 0px 24px;
             margin-bottom: 0px;
             margin-top: 0px;
             border: 1px solid rgba(0, 0, 0, 0.3);
@@ -254,7 +254,7 @@ if (isset($_GET['request_ping'])) {
                         </div>
                     </td>
                     <td style="text-align: center">
-                        <p>{{ $devices->IP_address }}</p>
+                        <p id="ip">{{ $devices->IP_address }}</p>
                     </td>
                     <td style="text-align: center">
                         <center>
@@ -311,7 +311,6 @@ if (isset($_GET['request_ping'])) {
                                 </td>
                                 <td style="width:20px;">
                                     <center>
-
                                         :
                                     </center>
                                 </td>
@@ -324,7 +323,6 @@ if (isset($_GET['request_ping'])) {
                                 </td>
                                 <td style="width:20px;">
                                     <center>
-
                                         :
                                     </center>
                                 </td>
@@ -354,7 +352,6 @@ if (isset($_GET['request_ping'])) {
                                 </td>
                                 <td style="width:20px;">
                                     <center>
-
                                         :
                                     </center>
                                 </td>
@@ -367,7 +364,6 @@ if (isset($_GET['request_ping'])) {
                                 </td>
                                 <td style="width:20px;">
                                     <center>
-
                                         :
                                     </center>
                                 </td>
@@ -419,43 +415,89 @@ if (isset($_GET['request_ping'])) {
                                     <tbody id="log-content">
                                     </tbody>
                                 </table>
-                            </div>
 
+                            </div>
                         </center>
+                        <div style="padding:8px 24px 8px 32px;;width:100%;display: flex; justify-content:space-between">
+                            <p><strong>Export Log Device Status to</strong></p>
+                            <div style="width:60%;display: flex; justify-content:space-evenly">
+                                <button class="inverted-primary-button" style="font-size:13px;">
+                                    <img src="{{ asset('img/icons/xls-icon.png') }}" width="18px"
+                                        style="margin-right: 1em">
+                                    XLS Report</button>
+                                <p>or</p>
+                                <button class="inverted-primary-button" style="margin-right: 4.3em; font-size:13px; ">
+                                    <img src="{{ asset('img/icons/pdf-icon.png') }}" width="18px"
+                                        style="margin-right: 1em">
+                                    PDF Report</button>
+                            </div>
+                        </div>
                     </td>
                     {{-- Stats Summary --}}
                     <td style="padding-left: 24px; display:block; align-items:start">
                         <p style="text-align: center"><strong>Stats Summary</strong></p>
-                        {{-- online --}}
+                        {{-- Total log --}}
                         <div style="display: flex; margin-bottom:1em">
                             <div
-                                style="width:64px;  color:white;border-radius:5px;background-color: #34C759; display:flex;align-items:center; justify-content:center">
-                                50%
+                                style="width:64px;  color:#34C759;border-radius:5px;background-color: transparent; display:flex;align-items:center; justify-content:center; border: 1px solid #34C759">
+                                100%
                             </div>
                             <div style="height 44px; margin-left:1em;">
-                                <div><strong> 1 Times </strong></div>
-                                <div>Online result</div>
+                                <div><strong id="total-result"> </strong></div>
+                                <div>Status Checked</div>
+                            </div>
+                        </div>
+                        {{-- online --}}
+                        <div style="display: flex; margin-bottom:1em">
+                            <div style="width:64px;  color:white;border-radius:5px;background-color: #34C759; display:flex;align-items:center; justify-content:center"
+                                id="online-percentage">
+
+                            </div>
+                            <div style="height 44px; margin-left:1em;">
+                                <div><strong id="online-result"> </strong></div>
+                                <div>Online status</div>
                             </div>
                         </div>
                         {{-- offline --}}
                         <div style="display: flex;">
-                            <div
-                                style="width:64px;  color:white;border-radius:5px;background-color: #CB0B00; display:flex;align-items:center; justify-content:center">
-                                50%
+                            <div style="width:64px;  color:white;border-radius:5px;background-color: #CB0B00; display:flex;align-items:center; justify-content:center"
+                                id="offline-percentage">
+
                             </div>
                             <div style="height 44px; margin-left:1em;">
-                                <div><strong> 1 Times </strong></div>
-                                <div>Offline result</div>
+                                <div><strong id="offline-result"> </strong></div>
+                                <div>Offline status</div>
                             </div>
                         </div>
+                        <center>
+                            <button class="primary-button" onclick="tracingShow()" type="button" id="runTracert"
+                                style="margin-top:4.4em; width:100%; display:flex; justify-content:center">
+                                Trace This Device
+                            </button>
+                        </center>
                     </td>
                 </tr>
             </table>
+
+            {{-- Tracing --}}
+            <div style="display: none" id="tracing-section">
+                <p style="font-size: 22px; font-weight:bold; margin-bottom:0px">Tracking Device</p>
+                <p style="margin-block: 0px;">See network path to current device</p>
+                <div style="display:flex;">
+                    <p style="border: 1px solid rgba(0, 0, 0, 0.3); width: 662px; padding:8px; border-radius:12px;"
+                        id="tracert-result">
+                        <span id="loading" style="display: none; font-style: italic; color: gray;">Loading...</span>
+                    </p>
+                    <div style="padding-inline:1em; display:none; margin-top:2em;" id="trace-complete">
+                        <img src="{{ asset('img/icons/trace-complete.png') }}" width="33px;">
+                        <p style="margin: 0px; font-size:13px;"><strong>Trace Complete</strong></p>
+                        <p style="margin: 0px;">Now, you can see this network’s paths here</p>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-
-
-
 
     <script>
         function staticToggle(element) {
@@ -479,8 +521,6 @@ if (isset($_GET['request_ping'])) {
                 row.classList.add('inactive-row');
             }
         });
-
-
 
         const pingIntervals = {}; // Object untuk menyimpan interval per device
 
@@ -665,11 +705,38 @@ if (isset($_GET['request_ping'])) {
                         document.querySelector('#log-modal .last-modified').textContent = UpdatedformattedDate;
 
                         // Fetch log data untuk perangkat ini
-                        return axios.get(`${deviceId}/log`);
+                        return axios.get(`/${deviceId}/log`);
                     })
                     .then(response => {
                         const logs = response.data.logs;
                         detailContent.innerHTML = ''; // Clear previous content
+
+                        // Hitung status Online dan Offline
+                        const statusCount = logs.reduce((count, log) => {
+                            if (log.status == 0) {
+                                count.offline += 1;
+                            } else {
+                                count.online += 1;
+                            }
+                            return count;
+                        }, {
+                            online: 0,
+                            offline: 0
+                        });
+
+                        const totalLogs = statusCount.online + statusCount.offline;
+
+                        // Hitung persentase
+                        const onlinePercentage = (statusCount.online / totalLogs) * 100;
+                        const offlinePercentage = (statusCount.offline / totalLogs) * 100;
+
+                        document.querySelector('#total-result').textContent = `${totalLogs} Result`;
+                        document.querySelector('#online-result').textContent = `${statusCount.online} Result`;
+                        document.querySelector('#offline-result').textContent = `${statusCount.offline} Result`;
+                        document.querySelector('#online-percentage').textContent =
+                            totalLogs === 0 ? '0%' : `${onlinePercentage.toFixed(1)}%`;
+                        document.querySelector('#offline-percentage').textContent =
+                            totalLogs === 0 ? '0%' : `${offlinePercentage.toFixed(1)}%`;
 
                         // Populate modal dengan log data
                         logs.forEach(log => {
@@ -684,6 +751,8 @@ if (isset($_GET['request_ping'])) {
                                 second: '2-digit'
                             });
 
+                            document.get
+
                             const row = `
                         <tr style="display: table;width: 100%;table-layout: fixed;">
                             <td style="padding: 8px">${formattedDate}</td>
@@ -694,7 +763,7 @@ if (isset($_GET['request_ping'])) {
                             </td>
                         </tr>
                     `;
-                            detailContent.insertAdjacentHTML('beforeend', row);
+                            detailContent.insertAdjacentHTML('afterbegin', row);
                         });
 
                         // Show modal
@@ -710,6 +779,61 @@ if (isset($_GET['request_ping'])) {
         function closeModal() {
             modal.style.display = 'none';
         }
+
+        // Tutup modal jika klik di luar area modal
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // menampilkan area tracert didalam modal
+        function tracingShow() {
+            tracingSec = document.getElementById('tracing-section');
+            tracingSec.style.display = 'block';
+            const tracingSection = document.getElementById('tracing-section');
+
+            tracingSection.scrollIntoView({
+                behavior: 'smooth'
+            });
+
+            document.getElementById('runTracert').click();
+        }
+
+        // Menjalankan tracert
+        document.getElementById('runTracert').addEventListener('click', function() {
+            const ip = document.getElementById('ip').textContent.trim();
+            const loading = document.getElementById('loading');
+            const tracertResult = document.getElementById('tracert-result');
+            const traceComplete = document.getElementById('trace-complete');
+
+            if (!ip) {
+                alert('Please enter an IP address or hostname.');
+                return;
+            }
+
+            // Tampilkan indikator loading dan kosongkan hasil sebelumnya
+            loading.style.display = 'inline';
+            tracertResult.innerHTML =
+                '<span id="loading" style="font-style: italic; color: gray;">Loading...</span>';
+            traceComplete.style.display = 'none';
+
+            axios.get(`/run-tracert/${ip}`)
+                .then(response => {
+                    // Tampilkan hasil dan sembunyikan loading
+                    tracertResult.innerHTML = response.data.output;
+                    traceComplete.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error(error);
+                    const errorMessage = error.response?.data?.error || 'Error running tracert.';
+                    tracertResult.innerHTML = `<span style="color: red;">${errorMessage}</span>`;
+                })
+                .finally(() => {
+                    // Sembunyikan loading setelah selesai
+                    loading.style.display = 'none';
+                });
+        });
     </script>
 
-</div> 
+</div>

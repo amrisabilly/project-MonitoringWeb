@@ -130,14 +130,6 @@
 
         <p>Show {{ $devices->count() }} devices in this folder</p>
 
-
-        @foreach ($logs as $log)
-            @for ($i = 0; $i < count($log); $i++)
-                <h1>{{ $log[$i]->device_id }}</h1>
-                <h1>{{ $log[$i]->created_at }}</h1>
-            @endfor
-        @endforeach
-
         <form action="{{ route('bulkDelete') }}" method="POST" id="bulk-action-form">
             @csrf
             {{-- Item Table --}}
@@ -175,7 +167,7 @@
 
         {{-- Error handling jika belum ada data diinputkan --}}
     @else
-        <div style="width: 100%; display:flex;justify-content:center; margin-block:2.32em">
+        <div style="width: 100%; display:flex;justify-content:center; margin-bottom:2.32em; margin-top:108px">
             <div>
                 <center>
                     <img src="{{ asset('img/icons/no-device.png') }}" width="120px">
@@ -193,13 +185,16 @@
             </div>
         </div>
 
-        <p style="font-size:18px;">
-            <strong>Professional Tips!</strong> <br>
-            1. Click “Add Device” button to start adding your first device <br>
-            2. Choose your unique and easy name for your device <br>
-            3. Don’t forget to add IP Address and MAC Address <br>
-            4. Once you done, click “Add” to adding your new device and start your monitoring
-        </p>
+        <div style="font-size:16px; opacity:0.4;position:relative;z-index:-1">
+            <p style="font-size: 18px "><strong>Professional Tips!</strong></p>
+            <p style="margin-block: 0px; text-indent:1em"> 1. Click “Add Device” button to start adding your first device
+            </p>
+            <p style="margin-block: 0px; text-indent:1em"> 2. Choose your unique and easy name for your device </p>
+            <p style="margin-block: 0px; text-indent:1em"> 3. Don’t forget to add IP Address and MAC Address </p>
+            <p style="margin-block: 0px; text-indent:1em"> 4. Once you done, click “Add” to adding your new device and
+                start your
+                monitoring</p>
+        </div>
 
         <script>
             // Dropdown Options

@@ -18,6 +18,23 @@
             border: #F56E02 1px solid;
             cursor: pointer;
         }
+
+        .empty-add-folder-button {
+            all: unset;
+            cursor: pointer;
+            margin-top: 2em;
+            gap: 0.5em;
+            width: 280px;
+            height: 49px;
+            background-color: transparent;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f56e02;
+            border: 1px solid #f56e02;
+
+        }
     </style>
 
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -70,19 +87,14 @@
                     <option value="offline">Offline</option>
                 </select>
             </div>
-
-
         </div>
 
         <p>Show {{ $device->count() }} devices in this folder</p>
-
 
         <form action="{{ route('bulkDelete') }}" method="POST" id="bulk-action-form">
             @csrf
             {{-- Item Table --}}
             @include('components.item-table', ['device' => $device])
-
-
             {{-- Select All --}}
             <div
                 style="display: flex; align-items:center; width:97%; justify-content:space-between; padding: 0px 20px 0px 20px;">
@@ -91,20 +103,20 @@
                     <input type="checkbox" name="" id="checkAllButton">
                     <p>Check All</p>
                 </div>
-
                 <div style="display: flex; align-items:center; gap:1em">
                     <p style="color: rgba(0, 0, 0, 0.396); font-style:italic">With selected action</p>
                     {{-- Edit --}}
                     <x-edit-device-modal modalId="edit" triggerId="edit" triggerText="Edit" title="Please Confirm Your Role"
                         content="Please input the password to verify your role to do this action." class="secondary-button"
-                        icon="img/icons/edit.png" actions="edit-device" modalIcon='img/icons/exclamation-circle.png'
-                        actionButtonClass="primary-button" />
+                        icon="{{ asset('img/icons/edit.png') }}" actions="edit-device"
+                        modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
                     {{-- Hapus --}}
                     <x-delete-device-modal modalId="delete" triggerId="delete" triggerText="Delete"
                         title="Please Confirm Your Role"
                         content="Please input the password to verify your role to do this action." class="danger-button"
-                        icon="img/icons/trash-alt.png" actions="#" modalIcon='img/icons/exclamation-circle.png'
-                        actionButtonClass="primary-button" submitFormId="bulk-action-form" />
+                        icon="{{ asset('img/icons/trash-alt.png') }}" actions="#"
+                        modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button"
+                        submitFormId="bulk-action-form" />
 
                 </div>
             </div>
@@ -112,30 +124,28 @@
 
         {{-- Error handling jika belum ada data diinputkan --}}
     @else
-        <div style="width: 100%; display:flex;justify-content:center; margin-block:2.32em">
+        <div style="width: 100%; display:flex;justify-content:center; margin-bottom:2.32em; margin-top:108px">
             <div>
                 <center>
-                    <img src="{{ asset('img/icons/no-device.png') }}" width="120px">
-                    <p style="font-weight:bold;font-size:21.3px;margin:0px">Your Folder is Empty</p>
-                    <p style="font-size:15.3px;margin-block:14px">Try adding your first device</p>
+                    <img src="{{ asset('img/icons/Folder_del.png') }}" width="120px">
+                    <p style="font-weight:bold;font-size:21.3px;margin:0px">No devices found</p>
+                    <p style="font-size:15.3px;margin-block:14px">Start by adding your first folder, then add your device
+                    </p>
 
-                    {{-- Add Device --}}
-                    <x-modal modalId="addFolder" triggerId="addFolder" triggerText="Add Folder"
-                        title="Please Confirm Your Role"
-                        content="Please input the password to verify your role to do this action." class="add-folder-button"
-                        icon="{{ asset('img/icons/plus.png') }}" actions='add-folder'
-                        modalIcon="{{ asset('img/icons/exclamation-circle.png') }}" actionButtonClass="primary-button" />
+
                 </center>
             </div>
         </div>
 
-        <p style="font-size:18px;">
-            <strong>Professional Tips!</strong> <br>
-            1. Click “Add Device” button to start adding your first device <br>
-            2. Choose your unique and easy name for your device <br>
-            3. Don’t forget to add IP Address and MAC Address <br>
-            4. Once you done, click “Add” to adding your new device and start your monitoring
-        </p>
+        <div style="font-size:16px; opacity:0.4;position:relative;z-index:-1">
+            <p style="font-size: 18px "><strong>Professional Tips!</strong></p>
+            <p style="margin-block: 0px; text-indent:1em"> 1. Try adding “New Folder” and add your first device.
+            </p>
+            <p style="margin-block: 0px; text-indent:1em"> 2. If you already created one, then “Add Device” inside of them
+            </p>
+            <p style="margin-block: 0px; text-indent:1em"> 3. All of your devices will be shown on this page. </p>
+
+        </div>
     @endif
 
     <script>
