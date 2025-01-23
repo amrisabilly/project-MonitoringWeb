@@ -47,7 +47,7 @@ Route::get('ping', function () {
         return $status === 0;
     }
 
-    $ipAddress = request('ip_address', '192.168.217.104');
+    $ipAddress = request('ip_address');
     $pingSuccess = cek($ipAddress);
 
     // Mengembalikan hasil dalam format JSON

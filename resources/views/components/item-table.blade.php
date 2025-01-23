@@ -109,6 +109,8 @@ if (isset($_GET['request_ping'])) {
             width: 100%;
             height: 100%;
             overflow: auto;
+            justify-content: center;
+            align-items: center;
             background-color: rgba(0, 0, 0, 0.4);
         }
 
@@ -121,6 +123,16 @@ if (isset($_GET['request_ping'])) {
             border-radius: 15px;
             max-height: 90%;
             overflow-y: auto;
+        }
+
+        .offline-modal-content {
+            background-color: #fff;
+            padding-block: 20px;
+            padding-inline: 80px;
+            margin: 10% auto;
+            width: 30%;
+            border-radius: 15px;
+            max-height: 90%;
         }
 
         .close-btn {
@@ -281,11 +293,11 @@ if (isset($_GET['request_ping'])) {
         </tbody>
     </table>
 
-    {{-- Modal --}}
+    {{-- Detail Modal  --}}
     <div class="modal" id="log-modal" style="display: none;">
         <div class="log-modal-content">
             {{-- Close Button --}}
-            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <button type="button" class="close-btn" onclick="closeModal()">&times;</button>
             {{-- Modal Header --}}
             <table class="modal-header-table" id="modal-header">
                 <tr>
@@ -501,6 +513,30 @@ if (isset($_GET['request_ping'])) {
         </div>
     </div>
 
+    {{-- Offline Modal --}}
+    <div id="offlineModal" class="modal">
+        <div class="offline-modal-content">
+            <div style="display: flex; gap:1em; margin-top:2em;">
+                <img src="{{ asset('img/icons/exclamation-triangle.png') }}" width="33px">
+                <p style="font-size: 25px; color:#FD0D00; font-weight:600; margin:0px;">Device Went Offline</p>
+            </div>
+            <p>The device’s connection failed. Device will auto reconnect</p>
+
+            <hr>
+
+            <p style="font-weight: bold; margin-bottom:4px;">Name &nbsp;: <span id="offlineDeviceName"
+                    style="font-weight: 400"></span></p>
+            <p style="font-weight: bold; margin-top:0px; margin-bottom:32px;">IP
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span id="offlineIpAddress"
+                    style="font-weight: 400"></span>
+            </p>
+
+            <center>
+                <p style="color: rgba(0, 0, 0, 0.4)">Tap anywhere to close tab</p>
+            </center>
+        </div>
+    </div>
+
     <script>
         function staticToggle(element) {
             element.classList.toggle('active'); // Toggle status aktif
@@ -595,13 +631,21 @@ if (isset($_GET['request_ping'])) {
                 .catch(error => console.error('Save log error:', error));
         }
 
+        // Menambahkan cache untuk nama perangkat
+        const deviceNameCache = {};
+
         // Fungsi untuk melakukan ping perangkat
-        function pingDevice(ipAddress, deviceId) {
+        function pingDevice(ipAddress, deviceId, deviceName) {
             fetch(`/ping?request_ping=true&ip_address=${ipAddress}`)
                 .then(response => response.json())
                 .then(data => {
                     const pingResult = data.ping_success;
                     console.log(`Ping result for device ${deviceId}: ${pingResult ? 'Online' : 'Offline'}`);
+
+                    // Simpan nama perangkat ke dalam cache jika belum ada
+                    if (!deviceNameCache[deviceId]) {
+                        deviceNameCache[deviceId] = deviceName;
+                    }
 
                     // Cek apakah status perangkat berubah
                     if (pingResult && deviceStatusCache[deviceId] !== 1) {
@@ -614,15 +658,23 @@ if (isset($_GET['request_ping'])) {
                         updateDeviceStatus(deviceId, 0); // Update status ke offline
                         writeLog(deviceId, 0); // Catat log offline
                         deviceStatusCache[deviceId] = 0; // Simpan status terbaru
+
+                        // Trigger Offline Modal dan tampilkan nama perangkat serta IP
+                        document.getElementById("offlineDeviceName").textContent = deviceNameCache[
+                            deviceId]; // Nama perangkat
+                        document.getElementById("offlineIpAddress").textContent = ipAddress; // IP perangkat
+                        document.getElementById("offlineModal").style.display = "block"; // Tampilkan modal
                     }
                 })
                 .catch(error => console.error('Ping Error:', error));
         }
 
-
+        function openofflinemodal() {
+            document.getElementById("offlineModal").style.display = "block";
+        }
 
         // Fungsi untuk mengatur ping berdasarkan status toggle
-        function handleToggleChange(deviceId, ipAddress) {
+        function handleToggleChange(deviceId, ipAddress, deviceName) {
             const toggleElement = document.getElementById(`toggle${deviceId}`);
             const statusElement = document.getElementById(`status-${deviceId}`);
 
@@ -632,7 +684,7 @@ if (isset($_GET['request_ping'])) {
                 if (!pingIntervals[deviceId]) {
                     // Mulai ping setiap 3 detik jika interval belum ada
                     pingIntervals[deviceId] = setInterval(function() {
-                        pingDevice(ipAddress, deviceId);
+                        pingDevice(ipAddress, deviceId, deviceName); // Pass nama perangkat ke pingDevice
                     }, 3000);
                 }
 
@@ -652,18 +704,20 @@ if (isset($_GET['request_ping'])) {
         // Event listener untuk toggle (saat toggle berubah)
         @foreach ($device as $devices)
             document.getElementById(`toggle{{ $devices->ID_device }}`).addEventListener('change', function() {
-                handleToggleChange({{ $devices->ID_device }}, '{{ $devices->IP_address }}');
+                handleToggleChange({{ $devices->ID_device }}, '{{ $devices->IP_address }}',
+                    '{{ $devices->nama }}');
             });
         @endforeach
 
         // Inisialisasi status awal ping untuk setiap perangkat (cek status toggle saat ini)
         @foreach ($device as $devices)
-            handleToggleChange({{ $devices->ID_device }}, '{{ $devices->IP_address }}');
+            handleToggleChange({{ $devices->ID_device }}, '{{ $devices->IP_address }}', '{{ $devices->nama }}');
         @endforeach
 
         // Modal Log
         const table = document.getElementById('itemTable');
         const modal = document.getElementById('log-modal');
+        const offlinemodal = document.getElementById('offlineModal');
         const detailContent = document.getElementById('log-content');
 
         // Mendengarkan event double click pada row tabel
@@ -780,11 +834,13 @@ if (isset($_GET['request_ping'])) {
         // Function to close modal
         function closeModal() {
             modal.style.display = 'none';
+            offlinemodal.style.display = 'none';
         }
 
         // Tutup modal jika klik di luar area modal
         window.addEventListener('click', function(e) {
-            if (e.target === modal) {
+            if (e.target === modal || e.target === offlinemodal) {
+
                 closeModal();
             }
         });
