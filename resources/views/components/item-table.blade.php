@@ -287,7 +287,7 @@ if (isset($_GET['request_ping'])) {
             {{-- Close Button --}}
             <button class="close-btn" onclick="closeModal()">&times;</button>
             {{-- Modal Header --}}
-            <table class="modal-header-table">
+            <table class="modal-header-table" id="modal-header">
                 <tr>
                     {{-- Kolom kiri --}}
                     <td>
@@ -297,7 +297,7 @@ if (isset($_GET['request_ping'])) {
                                 <td>
                                     Device Name
                                 </td>
-                                <td style="width:20px;">
+                                <td style="width:20px;" class="unused">
                                     <center>
                                         :
                                     </center>
@@ -309,7 +309,7 @@ if (isset($_GET['request_ping'])) {
                                 <td>
                                     IP Address
                                 </td>
-                                <td style="width:20px;">
+                                <td style="width:20px;" class="unused">
                                     <center>
                                         :
                                     </center>
@@ -321,7 +321,7 @@ if (isset($_GET['request_ping'])) {
                                 <td>
                                     MAC Address
                                 </td>
-                                <td style="width:20px;">
+                                <td style="width:20px;" class="unused">
                                     <center>
                                         :
                                     </center>
@@ -350,7 +350,7 @@ if (isset($_GET['request_ping'])) {
                                 <td>
                                     Created at
                                 </td>
-                                <td style="width:20px;">
+                                <td style="width:20px;" class="unused">
                                     <center>
                                         :
                                     </center>
@@ -362,7 +362,7 @@ if (isset($_GET['request_ping'])) {
                                 <td>
                                     Last modified
                                 </td>
-                                <td style="width:20px;">
+                                <td style="width:20px;" class="unused">
                                     <center>
                                         :
                                     </center>
@@ -399,7 +399,7 @@ if (isset($_GET['request_ping'])) {
                 <tr>
                     {{-- Log Device Status --}}
                     <td style="width:652px; border-right:1px solid rgba(0, 0, 0, 0.3);">
-                        <center>
+                        <center id="logTable">
                             <p><strong>Log Device Status</strong></p>
                             <div
                                 style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.3); width:90%;">
@@ -421,12 +421,14 @@ if (isset($_GET['request_ping'])) {
                         <div style="padding:8px 24px 8px 32px;;width:100%;display: flex; justify-content:space-between">
                             <p><strong>Export Log Device Status to</strong></p>
                             <div style="width:60%;display: flex; justify-content:space-evenly">
-                                <button class="inverted-primary-button" style="font-size:13px;">
+                                <button class="inverted-primary-button" style="font-size:13px;" type="button"
+                                    onclick="exportToExcel()">
                                     <img src="{{ asset('img/icons/xls-icon.png') }}" width="18px"
                                         style="margin-right: 1em">
                                     XLS Report</button>
                                 <p>or</p>
-                                <button class="inverted-primary-button" style="margin-right: 4.3em; font-size:13px; ">
+                                <button class="inverted-primary-button" style="margin-right: 4.3em; font-size:13px; "
+                                    type="button" onclick="exportToPDF()">
                                     <img src="{{ asset('img/icons/pdf-icon.png') }}" width="18px"
                                         style="margin-right: 1em">
                                     PDF Report</button>
@@ -834,6 +836,101 @@ if (isset($_GET['request_ping'])) {
                     loading.style.display = 'none';
                 });
         });
+
+        // eksport pdf
+        function exportToPDF() {
+            const header = document.getElementById("modal-header");
+            const logTable = document.getElementById("logTable");
+            const detailContent = document.getElementById('log-content');
+
+            // Set height to 'auto' before export
+            detailContent.style.height = 'auto';
+
+            const tempContainer = document.createElement("div");
+            tempContainer.appendChild(header.cloneNode(true));
+            tempContainer.appendChild(logTable.cloneNode(true));
+
+            // Set up options for html2pdf
+            const options = {
+                margin: 16,
+                filename: 'DeviceLog.pdf',
+                image: {
+                    type: 'jpeg',
+                    quality: 0.98
+                },
+                html2canvas: {
+                    scale: 4
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait'
+                }
+            };
+
+            // Export to PDF
+            html2pdf().from(tempContainer).set(options).save().then(() => {
+                // Restore height back to 200px after export
+                detailContent.style.height = '200px';
+            });
+        }
+
+        // eksport excel
+        function exportToExcel() {
+            const logTable = document.getElementById("logTable");
+            const anotherElement = document.getElementById("modal-header");
+
+            // Buat kontainer sementara untuk menggabungkan kedua elemen
+            const tempContainer = document.createElement("div");
+            tempContainer.appendChild(anotherElement.cloneNode(true)); // Elemen pertama
+            tempContainer.appendChild(logTable.cloneNode(true)); // Tabel di bawah
+
+            // Mengubah tabel menjadi buku Excel
+            const wb = XLSX.utils.table_to_book(tempContainer, {
+                sheet: "Sheet1"
+            });
+
+            // Mengakses sheet pertama
+            const ws = wb.Sheets["Sheet1"];
+
+            // Menghapus semua item di baris pertama (row 1)
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let col = range.s.c; col <= range.e.c; col++) {
+                const cell = ws[XLSX.utils.encode_cell({
+                    r: 0,
+                    c: col
+                })]; // Akses sel di baris pertama (row 1)
+                if (cell) {
+                    delete ws[XLSX.utils.encode_cell({
+                        r: 0,
+                        c: col
+                    })]; // Hapus konten sel
+                }
+            }
+
+            // Menyesuaikan lebar kolom secara otomatis berdasarkan konten
+            for (let col = range.s.c; col <= range.e.c; col++) {
+                let maxWidth = 10; // Set minimum width (menghindari terlalu kecil)
+                for (let row = range.s.r + 1; row <= range.e.r; row++) { // Mulai dari baris kedua untuk menghindari header
+                    const cell = ws[XLSX.utils.encode_cell({
+                        r: row,
+                        c: col
+                    })];
+                    if (cell && cell.v) {
+                        maxWidth = Math.max(maxWidth, cell.v.toString().length); // Cari panjang teks terpanjang
+                    }
+                }
+                const colLetter = XLSX.utils.encode_col(col); // Menentukan huruf kolom
+                ws['!cols'] = ws['!cols'] || [];
+                ws['!cols'][col] = {
+                    wch: maxWidth
+                }; // Atur lebar kolom
+            }
+
+            // Menyimpan file Excel
+            XLSX.writeFile(wb, "tabel.xlsx");
+        }
+    </script>
     </script>
 
 </div>
