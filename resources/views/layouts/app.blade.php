@@ -56,7 +56,7 @@
         <hr style="margin: 0px">
         <div style="display: flex; justify-content: space-between;">
             <p style="opacity: 0.5">
-                Sistem Monitoring Jaringan PT Jamu dan Farmaasi Sido Muncul
+                Sistem Monitoring Jaringan PT Xyz
             </p>
             <p style="opacity: 0.25">
                 Copyright © 2025 Sidomuncul - All Right Reserved
